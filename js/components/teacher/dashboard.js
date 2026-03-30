@@ -175,6 +175,11 @@ function renderTeacherHome(students, materi, subMateri, tests) {
                         <button id="deleteAllStudents" class="px-4 py-2 bg-red-100 text-red-600 rounded-xl hover:bg-red-200 transition-all text-sm font-medium">🗑️ Hapus Semua</button>
                     </div>
                 </div>
+                <!-- Informasi Jumlah Siswa -->
+                    <div class="mt-4 text-sm text-gray-500 flex justify-between items-center pt-2 border-t border-gray-100">
+                        <span>Total Siswa: <strong class="text-gray-700">${students.length}</strong></span>
+                        <span>Terakhir diperbarui: ${new Date().toLocaleTimeString()}</span>
+                    </div>
                 
                 ${students.length === 0 ? `
                     <div class="text-center py-12 text-gray-400">
