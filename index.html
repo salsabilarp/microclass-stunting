@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="id" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MicroClass - Sistem Administrasi Pembelajaran</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Font Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- XLSX Library -->
+    <script src="https://cdn.sheetjs.com/xlsx-0.20.2/package/dist/xlsx.full.min.js"></script>
+    
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="h-full bg-gray-50 font-sans">
+    <div id="app" class="h-full overflow-auto"></div>
+
+    <!-- ===== FIREBASE - PAKAI CARA YANG SUKSES DI TEST-FINAL ===== -->
+    <script>
+        // Fungsi untuk load script secara manual
+        function loadScript(src) {
+            return new Promise((resolve, reject) => {
+                const script = document.createElement('script');
+                script.src = src;
+                script.onload = resolve;
+                script.onerror = reject;
+                document.head.appendChild(script);
+            });
+        }
+
+        // Inisialisasi Firebase
+        async function initFirebase() {
+            try {
+                console.log('⏳ Loading Firebase...');
+                await loadScript('https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js');
+                await loadScript('https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js');
+                //await loadScript('https://www.gstatic.com/firebasejs/9.22.0/firebase-storage.js');
+                
+                console.log('✅ Firebase scripts loaded');
+
+                const firebaseConfig = {
+                    apiKey: "AIzaSyA5fwVd93Ghpp6pbaM5gPLFl1Fc8D9vhl0",
+                      authDomain: "microlearning-stunting1.firebaseapp.com",
+                      databaseURL: "https://microlearning-stunting1-default-rtdb.asia-southeast1.firebasedatabase.app",
+                      projectId: "microlearning-stunting1",
+                      storageBucket: "microlearning-stunting1.firebasestorage.app",
+                      messagingSenderId: "613484229542",
+                      appId: "1:613484229542:web:d63bda107538141efed567"
+                    };
+
+
+                // Inisialisasi
+                firebase.initializeApp(firebaseConfig);
+                const database = firebase.database();
+                
+                console.log('✅ Firebase initialized');
+                
+                // Simpan ke global
+                window.firebaseDatabase = database;
+                window.firebaseInitialized = true;
+                
+                // Test koneksi
+                database.ref('.info/connected').on('value', (snap) => {
+                    if (snap.val() === true) {
+                        console.log('✅ Connected to Firebase');
+                    }
+                });
+
+                // Mulai aplikasi setelah Firebase siap
+                startApp();
+
+            } catch (error) {
+                console.error('❌ Firebase failed:', error);
+                window.firebaseInitialized = false;
+                // Tetap jalan meski Firebase gagal (pake localStorage)
+                startApp();
+            }
+        }
+
+        // Fungsi untuk memulai aplikasi
+        function startApp() {
+            // Load core modules
+            const scripts = [
+                'js/config.js',
+                'js/utils.js',
+                'js/data-store.js',
+                'js/state.js',
+                'js/components/teacher/tests.js',
+                'js/components/teacher/materi.js',
+                'js/components/teacher/rekap.js',
+                'js/components/teacher/lkpd.js',
+                'js/components/teacher/dashboard.js',
+                'js/components/student/dashboard.js',
+                'js/components/student/materi.js',
+                'js/components/student/sub-materi-detail.js',
+                'js/components/student/nilai.js',
+                'js/components/login.js',
+                'js/events/auth.js',
+                'js/events/teacher/materi-events.js',
+                'js/events/teacher/submateri-events.js',
+                'js/events/teacher/test-events.js',
+                'js/events/student/student-events.js',
+                'js/app.js'
+            ];
+
+            function loadNext(index) {
+                if (index >= scripts.length) return;
+                
+                const script = document.createElement('script');
+                script.src = scripts[index];
+                script.onload = () => loadNext(index + 1);
+                script.onerror = () => loadNext(index + 1);
+                document.body.appendChild(script);
+            }
+
+            loadNext(0);
+        }
+
+        // Mulai Firebase
+        initFirebase();
+    </script>
+</body>
+</html>
